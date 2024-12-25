@@ -1,8 +1,13 @@
 package io.hhplus.architecture.domain.lecture;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
+import java.util.List;
 
-@Repository
-public interface LectureRepository extends JpaRepository<Lecture, Long> {
+public interface LectureRepository {
+
+    List<Lecture> findByStartDateTimeAfter(LocalDateTime startDateTime);
+
+    Lecture findById(long lectureId);
+
+    void save(Lecture lecture);
 }

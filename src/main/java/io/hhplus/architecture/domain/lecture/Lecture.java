@@ -1,12 +1,12 @@
 package io.hhplus.architecture.domain.lecture;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
+@Getter
 @Entity
 public class Lecture {
 
@@ -16,16 +16,30 @@ public class Lecture {
 
     private String title;
 
-    private LocalDate date;
-
-    private LocalTime startTime;
+    private LocalDateTime startDateTime;
 
     private String description;
 
-    private int maxCapacity;
+    private int remainingCapacity;
 
-    private String lectureName;
+    private String lecturerName;
 
-    @OneToMany(mappedBy = "user")
-    private List<LectureEnrollment> enrollments = new ArrayList<>();
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    public Lecture() {}
+
+    @Builder
+    private Lecture(String title, LocalDateTime startDateTime, String description, int remainingCapacity, String lecturerName) {
+        this.title = title;
+        this.startDateTime = startDateTime;
+        this.description = description;
+        this.remainingCapacity = remainingCapacity;
+        this.lecturerName = lecturerName;
+    }
+
+    public void deductRemainingCapacity() {
+        this.remainingCapacity--;
+    }
 }

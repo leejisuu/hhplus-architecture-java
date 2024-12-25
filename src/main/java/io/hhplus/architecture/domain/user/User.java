@@ -1,11 +1,8 @@
 package io.hhplus.architecture.domain.user;
 
-import io.hhplus.architecture.domain.lecture.Lecture;
-import io.hhplus.architecture.domain.lecture.LectureEnrollment;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 public class User {
@@ -16,6 +13,7 @@ public class User {
 
     private String name;
 
-    @OneToMany(mappedBy = "lecture")
-    private List<LectureEnrollment> enrollments = new ArrayList<>();
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
