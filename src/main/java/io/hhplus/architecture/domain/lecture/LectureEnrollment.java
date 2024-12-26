@@ -58,4 +58,10 @@ public class LectureEnrollment extends BaseCreatedAtEntity {
                 .lectureId(request.getLectureId())
                 .build();
     }
+
+    public void isAlreadyEnrolled() {
+        if(this.id != null) {
+            throw new RuntimeException("각 특강은 한 번만 신청할 수 있습니다.");
+        }
+    }
 }

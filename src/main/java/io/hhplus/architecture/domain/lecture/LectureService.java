@@ -33,6 +33,10 @@ public class LectureService {
     public LectureEnrollmentResponse saveLectureEnrollment(LectureEnrollmentRequest request) {
         LectureEnrollment enrollment = LectureEnrollment.from(request);
 
+        // 이미 수강 신청 한 특강인지 체크
+        LectureEnrollment enrolled = lectureEnrollmentRepository.findByUserIdAndLectureId(enrollment.getUserId(), enrollment.getLectureId());
+        enrolled.isAlreadyEnrolled();
+
         Lecture lecture = lectureRepository.findByIdWithPessimisticLock(enrollment.getLectureId());
 
         /*
