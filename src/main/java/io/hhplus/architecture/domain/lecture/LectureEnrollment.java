@@ -1,18 +1,19 @@
 package io.hhplus.architecture.domain.lecture;
 
+import io.hhplus.architecture.domain.common.BaseCreatedAtEntity;
+import io.hhplus.architecture.interfaces.api.lecture.dto.LectureEnrollmentRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class LectureEnrollment {
+public class LectureEnrollment extends BaseCreatedAtEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +30,6 @@ public class LectureEnrollment {
     private String description;
 
     private String lecturerName;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     @Builder
     private LectureEnrollment(Long userId, Long lectureId, String title, LocalDateTime startDateTime, String description, String lecturerName) {
@@ -51,6 +49,13 @@ public class LectureEnrollment {
                 .startDateTime(lecture.getStartDateTime())
                 .description(lecture.getDescription())
                 .lecturerName(lecture.getLecturerName())
+                .build();
+    }
+
+    public static LectureEnrollment from(LectureEnrollmentRequest request) {
+        return LectureEnrollment.builder()
+                .userId(request.getUserId())
+                .lectureId(request.getLectureId())
                 .build();
     }
 }

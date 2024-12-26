@@ -1,19 +1,18 @@
 package io.hhplus.architecture.domain.lecture;
 
+import io.hhplus.architecture.domain.common.BaseAuditEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Lecture {
+public class Lecture extends BaseAuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,12 +28,6 @@ public class Lecture {
 
     private String lecturerName;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-
     @Builder
     private Lecture(String title, LocalDateTime startDateTime, String description, int remainingCapacity, String lecturerName) {
         this.title = title;
@@ -45,6 +38,11 @@ public class Lecture {
     }
 
     public void deductRemainingCapacity() {
-        this.remainingCapacity--;
+        if (remainingCapacity >= 1) {
+            this.remainingCapacity--;
+        } else {
+            throw new RuntimeException("신청 가능한 최대 정원이 초과되었습니다.");
+        }
+
     }
 }
