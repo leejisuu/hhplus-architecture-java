@@ -84,7 +84,6 @@ public class LectureServiceIntegrationTest {
         // given
         LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
         Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 30, "강사"));
-        System.out.println(lecture.getId() + " ");
 
         // 성공 카운트를 세는 변수
         AtomicInteger cnt = new AtomicInteger();
@@ -124,6 +123,74 @@ public class LectureServiceIntegrationTest {
 
         // when // then
         assertThat(cnt.get()).isEqualTo(30);
+    }
+
+    @Test
+    void 이미_수강_신청한_강의를_다시_수강_신청하면_예외를_발생한다() {
+        Long userId = 1L;
+        LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
+
+        Lecture lecture = lectureRepository.saveAndFlush(createLecture("특강", startDateTime, "설명", 30, "강사"));
+
+        LectureEnrollmentRequest request = LectureEnrollmentRequest.builder()
+                .userId(userId)
+                .lectureId(lecture.getId())
+                .build();
+
+        // 최초 수강 신청
+        lectureService.saveLectureEnrollment(request);
+
+        // when // then
+        // 중복 수강 신청
+        assertThatThrownBy(() -> lectureService.saveLectureEnrollment(request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("각 특강은 한 번만 신청할 수 있습니다.");
+    }
+
+    @Test
+    void 동일한_유저_정보로_같은_특강을_5번_신청했을_때_1번만_성공한다() throws InterruptedException {
+        // given
+        Long userId = 1L;
+        LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
+        Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 30, "강사"));
+
+        // 성공 카운트를 세는 변수
+        AtomicInteger cnt = new AtomicInteger();
+        // 예외 발생 여부 체크하는 변수
+        AtomicBoolean execptionThrown = new AtomicBoolean(false);
+
+        int threadCount = 5;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+        for (int i = 1; i <= threadCount; i++) {
+            // 예외 발생하면 반복문 빠져나오기
+            if(execptionThrown.get()) {
+                break;
+            }
+
+            executorService.submit(() -> {
+                try {
+                    LectureEnrollmentRequest request = LectureEnrollmentRequest.builder()
+                            .userId(userId)
+                            .lectureId(lecture.getId())
+                            .build();
+
+                    lectureService.saveLectureEnrollment(request);
+                    cnt.getAndIncrement();
+                } catch(RuntimeException e) {
+                    execptionThrown.set(true);
+                } finally {
+                    countDownLatch.countDown();
+                }
+
+            });
+        }
+
+        countDownLatch.await();
+        executorService.shutdown();
+
+        // when // then
+        assertThat(cnt.get()).isEqualTo(1);
     }
 
     private static Lecture createLecture(String title, LocalDateTime startDateTime, String description, int remainingCapacity, String lecturerName) {
