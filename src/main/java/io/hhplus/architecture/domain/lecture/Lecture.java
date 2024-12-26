@@ -1,12 +1,17 @@
 package io.hhplus.architecture.domain.lecture;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Lecture {
 
@@ -24,11 +29,11 @@ public class Lecture {
 
     private String lecturerName;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    public Lecture() {}
 
     @Builder
     private Lecture(String title, LocalDateTime startDateTime, String description, int remainingCapacity, String lecturerName) {
