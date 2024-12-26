@@ -21,12 +21,22 @@ public class LectureEnrollmentRepositoryImpl implements LectureEnrollmentReposit
     }
 
     @Override
-    public List<LectureEnrollment> findAllByUserId(Long userId) {
-        return lectureEnrollmentJpaRepository.findAllByUserId(userId);
+    public List<LectureEnrollment> findAllByUserIdOrderByCreatedAtDesc(Long userId) {
+        return lectureEnrollmentJpaRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
     }
 
     @Override
     public LectureEnrollment findByUserIdAndLectureId(long userId, long lectureId) {
         return lectureEnrollmentJpaRepository.findByUserIdAndLectureId(userId, lectureId);
+    }
+
+    @Override
+    public void deleteAllInBatch() {
+        lectureEnrollmentJpaRepository.deleteAllInBatch();
+    }
+
+    @Override
+    public List<LectureEnrollment> saveAll(List<LectureEnrollment> lectureEnrollments) {
+        return lectureEnrollmentJpaRepository.saveAll(lectureEnrollments);
     }
 }

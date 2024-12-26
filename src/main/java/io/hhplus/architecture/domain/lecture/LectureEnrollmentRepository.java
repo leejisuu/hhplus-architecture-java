@@ -6,7 +6,11 @@ public interface LectureEnrollmentRepository {
 
     LectureEnrollment save(LectureEnrollment lectureEnrollment);
 
-    List<LectureEnrollment> findAllByUserId(Long userId);
+    List<LectureEnrollment> findAllByUserIdOrderByCreatedAtDesc(Long userId);
 
     LectureEnrollment findByUserIdAndLectureId(long userId, long lectureId);
+
+    void deleteAllInBatch();
+
+    List<LectureEnrollment> saveAll(List<LectureEnrollment> lectureEnrollments);
 }

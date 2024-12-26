@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@NoArgsConstructor
 @Getter
 public class LectureEnrollmentRequest {
 
@@ -23,5 +22,4 @@ public class LectureEnrollmentRequest {
         this.userId = userId;
         this.lectureId = lectureId;
     }
-
 }

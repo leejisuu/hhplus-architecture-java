@@ -16,9 +16,10 @@ public class LectureEnrollmentResponse {
     private LocalDateTime startDateTime;
     private String description;
     private String lecturerName;
+    private LocalDateTime createdAt;
 
     @Builder
-    private LectureEnrollmentResponse(Long id, Long userId, Long lectureId, String title, LocalDateTime startDateTime, String description, String lecturerName) {
+    private LectureEnrollmentResponse(Long id, Long userId, Long lectureId, String title, LocalDateTime startDateTime, String description, String lecturerName, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.lectureId = lectureId;
@@ -26,6 +27,7 @@ public class LectureEnrollmentResponse {
         this.startDateTime = startDateTime;
         this.description = description;
         this.lecturerName = lecturerName;
+        this.createdAt = createdAt;
     }
 
     public static LectureEnrollmentResponse of(LectureEnrollment lectureEnrollment) {
@@ -37,6 +39,7 @@ public class LectureEnrollmentResponse {
                 .startDateTime(lectureEnrollment.getStartDateTime())
                 .description(lectureEnrollment.getDescription())
                 .lecturerName(lectureEnrollment.getLecturerName())
+                .createdAt(lectureEnrollment.getCreatedAt())
                 .build();
     }
 

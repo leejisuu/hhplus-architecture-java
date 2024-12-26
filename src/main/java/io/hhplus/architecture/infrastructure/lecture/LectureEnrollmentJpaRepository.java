@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LectureEnrollmentJpaRepository extends JpaRepository<LectureEnrollment, Long> {
 
-    List<LectureEnrollment> findAllByUserId(Long userId);
-
     LectureEnrollment findByUserIdAndLectureId(long userId, long lectureId);
+
+    List<LectureEnrollment> findAllByUserIdOrderByCreatedAtDesc(Long userId);
 }
