@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface LectureJpaRepository extends JpaRepository<Lecture, Long> {
-    List<Lecture> findByStartDateTimeAfter(LocalDateTime startDateTime);
+    List<Lecture> findByStartDateTimeAfterOrderByStartDateTime(LocalDateTime startDateTime);
 }

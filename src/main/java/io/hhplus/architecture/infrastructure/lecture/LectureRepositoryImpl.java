@@ -3,7 +3,6 @@ package io.hhplus.architecture.infrastructure.lecture;
 import io.hhplus.architecture.domain.lecture.Lecture;
 import io.hhplus.architecture.domain.lecture.LectureRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -16,8 +15,8 @@ public class LectureRepositoryImpl implements LectureRepository {
     private final LectureJpaRepository lectureJpaRepository;
 
     @Override
-    public List<Lecture> findByStartDateTimeAfter(LocalDateTime startDateTime) {
-        return lectureJpaRepository.findByStartDateTimeAfter(startDateTime);
+    public List<Lecture> findByStartDateTimeAfterOrderByStartDateTime(LocalDateTime startDateTime) {
+        return lectureJpaRepository.findByStartDateTimeAfterOrderByStartDateTime(startDateTime);
     }
 
     @Override
@@ -33,5 +32,10 @@ public class LectureRepositoryImpl implements LectureRepository {
     @Override
     public void deleteAllInBatch() {
         lectureJpaRepository.deleteAllInBatch();
+    }
+
+    @Override
+    public List<Lecture> saveAll(List<Lecture> lectures) {
+        return lectureJpaRepository.saveAll(lectures);
     }
 }
