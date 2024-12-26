@@ -41,15 +41,13 @@ public class LectureServiceIntegrationTest {
     void 신청_기능한_잔여_좌석수가_1_이상이면_신청_성공한다() {
         // given
         Long userId = 1L;
-        Long lectureId = 1L;
-
         LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
 
         Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 1, "강사"));
 
         LectureEnrollmentRequest request = LectureEnrollmentRequest.builder()
                 .userId(userId)
-                .lectureId(lectureId)
+                .lectureId(lecture.getId())
                 .build();
 
         // when
@@ -58,22 +56,20 @@ public class LectureServiceIntegrationTest {
         // then
         assertThat(response).isNotNull()
                 .extracting("userId", "lectureId", "title", "startDateTime", "description", "lecturerName")
-                .containsExactly(userId, lectureId, lecture.getTitle(), lecture.getStartDateTime(), lecture.getDescription(), lecture.getLecturerName());
+                .containsExactly(userId, lecture.getId(), lecture.getTitle(), lecture.getStartDateTime(), lecture.getDescription(), lecture.getLecturerName());
     }
 
     @Test
     void 신청_기능한_잔여_좌석수가_0_이하면_예외를_발생하고_신청_실패한다() {
         // given
         Long userId = 1L;
-        Long lectureId = 2L;
-
         LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
 
-        lectureRepository.save(createLecture("특강", startDateTime, "설명", 0, "강사"));
+        Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 0, "강사"));
 
         LectureEnrollmentRequest request = LectureEnrollmentRequest.builder()
                 .userId(userId)
-                .lectureId(lectureId)
+                .lectureId(lecture.getId())
                 .build();
 
         // when // then
@@ -88,6 +84,7 @@ public class LectureServiceIntegrationTest {
         // given
         LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
         Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 30, "강사"));
+        System.out.println(lecture.getId() + " ");
 
         // 성공 카운트를 세는 변수
         AtomicInteger cnt = new AtomicInteger();
