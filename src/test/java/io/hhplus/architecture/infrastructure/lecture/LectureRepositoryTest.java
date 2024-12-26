@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +44,7 @@ class LectureRepositoryTest {
                         lecture.getRemainingCapacity(), lecture.getLecturerName());
     }
 
+    @Transactional
     @Test
     void 강의_id로_강의_정보를_조회한다() {
         // given
@@ -52,7 +54,7 @@ class LectureRepositoryTest {
         Lecture savedLecture = lectureRepository.save(lecture);
 
         // when
-        Lecture result = lectureRepository.findById(savedLecture.getId());
+        Lecture result = lectureRepository.findByIdWithPessimisticLock(savedLecture.getId());
 
         // then
         assertThat(result)

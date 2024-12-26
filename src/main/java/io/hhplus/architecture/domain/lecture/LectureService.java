@@ -33,7 +33,7 @@ public class LectureService {
     public LectureEnrollmentResponse saveLectureEnrollment(LectureEnrollmentRequest request) {
         LectureEnrollment enrollment = LectureEnrollment.from(request);
 
-        Lecture lecture = lectureRepository.findById(enrollment.getLectureId());
+        Lecture lecture = lectureRepository.findByIdWithPessimisticLock(enrollment.getLectureId());
 
         /*
         * 신청 가능 잔여 좌석이 1보다 크면 1 감소.
