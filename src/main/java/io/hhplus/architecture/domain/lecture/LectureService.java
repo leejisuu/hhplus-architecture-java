@@ -30,7 +30,7 @@ public class LectureService {
         lecture.deductRemainingCapacity();
         lectureRepository.save(lecture);
 
-        LectureEnrollment lectureEnrollment = LectureEnrollment.create(lecture, userId, currentDateTime);
+        LectureEnrollment lectureEnrollment = LectureEnrollment.create(lecture, userId);
 
         return lectureEnrollmentRepository.save(lectureEnrollment);
     }
