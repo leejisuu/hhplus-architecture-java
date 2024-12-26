@@ -9,5 +9,7 @@ public interface LectureRepository {
 
     Lecture findById(long lectureId);
 
-    void save(Lecture lecture);
+    Lecture save(Lecture lecture);
+
+    void deleteAllInBatch();
 }

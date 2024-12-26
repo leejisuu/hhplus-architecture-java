@@ -26,7 +26,12 @@ public class LectureRepositoryImpl implements LectureRepository {
     }
 
     @Override
-    public void save(Lecture lecture) {
-        lectureJpaRepository.save(lecture);
+    public Lecture save(Lecture lecture) {
+        return lectureJpaRepository.save(lecture);
+    }
+
+    @Override
+    public void deleteAllInBatch() {
+        lectureJpaRepository.deleteAllInBatch();
     }
 }
