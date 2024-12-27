@@ -38,4 +38,9 @@ public class LectureRepositoryImpl implements LectureRepository {
     public Lecture findByIdWithPessimisticLock(Long lectureId) {
         return lectureJpaRepository.findByIdWithPessimisticLock(lectureId);
     }
+
+    @Override
+    public Lecture saveAndFlush(Lecture lecture) {
+        return lectureJpaRepository.saveAndFlush(lecture);
+    }
 }

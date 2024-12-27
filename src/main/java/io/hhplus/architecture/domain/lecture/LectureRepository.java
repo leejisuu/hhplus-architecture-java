@@ -14,4 +14,6 @@ public interface LectureRepository {
     List<Lecture> saveAll(List<Lecture> lectures);
 
     Lecture findByIdWithPessimisticLock(Long lectureId);
+
+    Lecture saveAndFlush(Lecture lecture);
 }
