@@ -152,7 +152,7 @@ public class LectureServiceIntegrationTest {
         // given
         Long userId = 1L;
         LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
-        Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 30, "강사"));
+        Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 5, "강사"));
 
         // 성공 카운트를 세는 변수
         AtomicInteger cnt = new AtomicInteger();
@@ -161,7 +161,7 @@ public class LectureServiceIntegrationTest {
 
         int threadCount = 5;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+        CountDownLatch countDownLatch = new CountDownLatch(1);
         for (int i = 1; i <= threadCount; i++) {
             // 예외 발생하면 반복문 빠져나오기
             if(execptionThrown.get()) {

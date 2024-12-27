@@ -35,7 +35,9 @@ public class LectureService {
 
         // 이미 수강 신청 한 특강인지 체크
         LectureEnrollment enrolled = lectureEnrollmentRepository.findByUserIdAndLectureId(enrollment.getUserId(), enrollment.getLectureId());
-        enrolled.isAlreadyEnrolled();
+        if(enrolled != null) {
+            throw new RuntimeException("각 특강은 한 번만 신청할 수 있습니다.");
+        }
 
         Lecture lecture = lectureRepository.findByIdWithPessimisticLock(enrollment.getLectureId());
 
