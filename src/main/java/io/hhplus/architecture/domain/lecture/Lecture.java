@@ -1,6 +1,8 @@
 package io.hhplus.architecture.domain.lecture;
 
 import io.hhplus.architecture.domain.common.BaseAuditEntity;
+import io.hhplus.architecture.support.exception.CustomException;
+import io.hhplus.architecture.support.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,7 +43,7 @@ public class Lecture extends BaseAuditEntity {
         if (remainingCapacity >= 1) {
             this.remainingCapacity--;
         } else {
-            throw new RuntimeException("신청 가능한 최대 정원이 초과되었습니다.");
+            throw new CustomException(ErrorCode.LECTURE_FULL);
         }
 
     }

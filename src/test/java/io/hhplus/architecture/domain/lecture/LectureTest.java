@@ -1,5 +1,6 @@
 package io.hhplus.architecture.domain.lecture;
 
+import io.hhplus.architecture.support.exception.CustomException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ class LectureTest {
 
         // when // then
         assertThatThrownBy(() -> lecture.deductRemainingCapacity())
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage("신청 가능한 최대 정원이 초과되었습니다.");
     }
 }

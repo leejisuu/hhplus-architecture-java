@@ -2,6 +2,7 @@ package io.hhplus.architecture.domain.lecture;
 
 import io.hhplus.architecture.interfaces.api.lecture.dto.LectureEnrollmentRequest;
 import io.hhplus.architecture.interfaces.api.lecture.dto.LectureEnrollmentResponse;
+import io.hhplus.architecture.support.exception.CustomException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class LectureServiceIntegrationTest {
 
         // when // then
         assertThatThrownBy(() -> lectureService.saveLectureEnrollment(request))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage("신청 가능한 최대 정원이 초과되었습니다.");
 
     }
@@ -143,7 +144,7 @@ public class LectureServiceIntegrationTest {
         // when // then
         // 중복 수강 신청
         assertThatThrownBy(() -> lectureService.saveLectureEnrollment(request))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage("각 특강은 한 번만 신청할 수 있습니다.");
     }
 
