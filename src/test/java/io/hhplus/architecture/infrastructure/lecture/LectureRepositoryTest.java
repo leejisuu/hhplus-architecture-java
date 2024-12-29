@@ -54,7 +54,7 @@ class LectureRepositoryTest {
         Lecture savedLecture = lectureRepository.save(lecture);
 
         // when
-        Lecture result = lectureRepository.findByIdWithPessimisticLock(savedLecture.getId());
+        Lecture result = lectureRepository.findByIdWithLock(savedLecture.getId());
 
         // then
         assertThat(result)

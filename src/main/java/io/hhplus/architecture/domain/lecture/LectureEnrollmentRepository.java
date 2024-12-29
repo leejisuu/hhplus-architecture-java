@@ -10,6 +10,7 @@ public interface LectureEnrollmentRepository {
 
     LectureEnrollment findByUserIdAndLectureId(long userId, long lectureId);
 
+    // TODO : deleteAllInBatch 삭제하기
     void deleteAllInBatch();
 
     List<LectureEnrollment> saveAll(List<LectureEnrollment> lectureEnrollments);

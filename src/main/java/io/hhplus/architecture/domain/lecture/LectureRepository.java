@@ -9,11 +9,12 @@ public interface LectureRepository {
 
     Lecture save(Lecture lecture);
 
+    // TODO : deleteAllInBatch 삭제하기
     void deleteAllInBatch();
 
     List<Lecture> saveAll(List<Lecture> lectures);
 
-    Lecture findByIdWithPessimisticLock(Long lectureId);
+    Lecture findByIdWithLock(Long lectureId);
 
     Lecture saveAndFlush(Lecture lecture);
 }

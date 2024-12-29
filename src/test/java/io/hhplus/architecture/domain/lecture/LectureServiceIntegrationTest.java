@@ -52,7 +52,7 @@ public class LectureServiceIntegrationTest {
                 .build();
 
         // when
-        LectureEnrollmentResponse response = lectureService.saveLectureEnrollment(request);
+        LectureEnrollmentResponse response = lectureService.enrollLecture(request.getUserId(), request.getLectureId());
 
         // then
         assertThat(response).isNotNull()
@@ -74,7 +74,7 @@ public class LectureServiceIntegrationTest {
                 .build();
 
         // when // then
-        assertThatThrownBy(() -> lectureService.saveLectureEnrollment(request))
+        assertThatThrownBy(() -> lectureService.enrollLecture(request.getUserId(), request.getLectureId()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("신청 가능한 최대 정원이 초과되었습니다.");
 
@@ -108,7 +108,7 @@ public class LectureServiceIntegrationTest {
                             .lectureId(lecture.getId())
                             .build();
 
-                    lectureService.saveLectureEnrollment(request);
+                    lectureService.enrollLecture(request.getUserId(), request.getLectureId());
                     cnt.getAndIncrement();
                 } catch(RuntimeException e) {
                     execptionThrown.set(true);
@@ -139,11 +139,11 @@ public class LectureServiceIntegrationTest {
                 .build();
 
         // 최초 수강 신청
-        lectureService.saveLectureEnrollment(request);
+        lectureService.enrollLecture(request.getUserId(), request.getLectureId());
 
         // when // then
         // 중복 수강 신청
-        assertThatThrownBy(() -> lectureService.saveLectureEnrollment(request))
+        assertThatThrownBy(() -> lectureService.enrollLecture(request.getUserId(), request.getLectureId()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("각 특강은 한 번만 신청할 수 있습니다.");
     }
@@ -176,7 +176,7 @@ public class LectureServiceIntegrationTest {
                             .lectureId(lecture.getId())
                             .build();
 
-                    lectureService.saveLectureEnrollment(request);
+                    lectureService.enrollLecture(request.getUserId(), request.getLectureId());
                     cnt.getAndIncrement();
                 } catch(RuntimeException e) {
                     execptionThrown.set(true);

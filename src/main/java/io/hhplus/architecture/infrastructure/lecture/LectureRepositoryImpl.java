@@ -35,7 +35,7 @@ public class LectureRepositoryImpl implements LectureRepository {
     }
 
     @Override
-    public Lecture findByIdWithPessimisticLock(Long lectureId) {
+    public Lecture findByIdWithLock(Long lectureId) {
         return lectureJpaRepository.findByIdWithPessimisticLock(lectureId);
     }
 

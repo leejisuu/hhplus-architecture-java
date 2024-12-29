@@ -40,11 +40,9 @@ public class Lecture extends BaseAuditEntity {
     }
 
     public void deductRemainingCapacity() {
-        if (remainingCapacity >= 1) {
-            this.remainingCapacity--;
-        } else {
+        if (remainingCapacity  <= 0) {
             throw new CustomException(ErrorCode.LECTURE_FULL);
         }
-
+        this.remainingCapacity--;
     }
 }

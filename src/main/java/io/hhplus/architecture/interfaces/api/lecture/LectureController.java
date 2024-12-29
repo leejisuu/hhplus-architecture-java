@@ -20,14 +20,13 @@ public class LectureController {
     @GetMapping("/lectures")
     public List<LectureResponse> getLectures() {
         LocalDateTime currentDateTime = LocalDateTime.now();
-
         return lectureService.getLectures(currentDateTime);
     }
 
     // 특강 신청 API
     @PostMapping("/lectures/enroll")
     public LectureEnrollmentResponse enrollLecture(@RequestBody LectureEnrollmentRequest lectureEnrollmentRequest) {
-        return lectureService.saveLectureEnrollment(lectureEnrollmentRequest);
+        return lectureService.enrollLecture(lectureEnrollmentRequest.getUserId(), lectureEnrollmentRequest.getLectureId());
     }
 
     // 특강 신청 완료 목록 조회 API

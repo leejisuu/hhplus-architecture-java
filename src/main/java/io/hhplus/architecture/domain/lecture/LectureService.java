@@ -32,26 +32,21 @@ public class LectureService {
 
     // 특강 신청
     @Transactional
-    public LectureEnrollmentResponse saveLectureEnrollment(LectureEnrollmentRequest request) {
-        LectureEnrollment enrollment = LectureEnrollment.from(request);
+    public LectureEnrollmentResponse enrollLecture(Long userId, Long lectureId) {
+        // Lecture를 트랜잭션 초입에 비관적 락 활용해서 조회
+        Lecture lecture = lectureRepository.findByIdWithLock(lectureId);
 
         // 이미 수강 신청 한 특강인지 체크
-        LectureEnrollment enrolled = lectureEnrollmentRepository.findByUserIdAndLectureId(enrollment.getUserId(), enrollment.getLectureId());
-        if(enrolled != null) {
+        LectureEnrollment enrolledLecture = lectureEnrollmentRepository.findByUserIdAndLectureId(userId, lecture.getId());
+        if(enrolledLecture != null) {
             throw new CustomException(ErrorCode.LECTURE_ALREADY_ENROLLED);
         }
 
-        Lecture lecture = lectureRepository.findByIdWithPessimisticLock(enrollment.getLectureId());
-
-        /*
-        * 신청 가능 잔여 좌석이 1보다 크면 1 감소.
-        * 0 이하라면 예외 발생
-         * */
+        // 신청 가능 잔여 좌석이 1보다 크면 1 감소. 0 이하라면 예외 발생
         lecture.deductRemainingCapacity();
-        lectureRepository.save(lecture);
 
         // lecture 스냅샷 정보 세팅
-        LectureEnrollment lectureEnrollment = LectureEnrollment.create(lecture, enrollment.getUserId());
+        LectureEnrollment lectureEnrollment = LectureEnrollment.create(lecture, userId);
 
         return LectureEnrollmentResponse.of(lectureEnrollmentRepository.save(lectureEnrollment));
     }
