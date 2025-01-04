@@ -7,11 +7,13 @@ public interface LectureRepository {
 
     List<Lecture> findByStartDateTimeAfterOrderByStartDateTime(LocalDateTime startDateTime);
 
-    Lecture findById(long lectureId);
-
     Lecture save(Lecture lecture);
 
     void deleteAllInBatch();
 
     List<Lecture> saveAll(List<Lecture> lectures);
+
+    Lecture findByIdWithPessimisticLock(Long lectureId);
+
+    Lecture saveAndFlush(Lecture lecture);
 }

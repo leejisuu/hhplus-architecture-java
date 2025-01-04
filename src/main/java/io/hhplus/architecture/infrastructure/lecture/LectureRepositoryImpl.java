@@ -20,11 +20,6 @@ public class LectureRepositoryImpl implements LectureRepository {
     }
 
     @Override
-    public Lecture findById(long lectureId) {
-        return lectureJpaRepository.findById(lectureId).orElse(null);
-    }
-
-    @Override
     public Lecture save(Lecture lecture) {
         return lectureJpaRepository.save(lecture);
     }
@@ -37,5 +32,15 @@ public class LectureRepositoryImpl implements LectureRepository {
     @Override
     public List<Lecture> saveAll(List<Lecture> lectures) {
         return lectureJpaRepository.saveAll(lectures);
+    }
+
+    @Override
+    public Lecture findByIdWithPessimisticLock(Long lectureId) {
+        return lectureJpaRepository.findByIdWithPessimisticLock(lectureId);
+    }
+
+    @Override
+    public Lecture saveAndFlush(Lecture lecture) {
+        return lectureJpaRepository.saveAndFlush(lecture);
     }
 }
