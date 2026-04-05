@@ -2,11 +2,9 @@ package io.hhplus.architecture.infrastructure.lecture;
 
 import io.hhplus.architecture.domain.lecture.Lecture;
 import io.hhplus.architecture.domain.lecture.LectureRepository;
-import org.junit.jupiter.api.AfterEach;
+import io.hhplus.architecture.support.IntegrationTestSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -15,17 +13,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class LectureRepositoryTest {
+class LectureRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private  LectureRepository lectureRepository;
-
-    @AfterEach
-    void tearDown() {
-        lectureRepository.deleteAllInBatch();
-    }
 
     @Test
     void 강의_정보를_저장한다() {
