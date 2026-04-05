@@ -1,41 +1,26 @@
 package io.hhplus.architecture.domain.lecture;
 
 import io.hhplus.architecture.interfaces.api.lecture.dto.LectureEnrollmentRequest;
-import io.hhplus.architecture.interfaces.api.lecture.dto.LectureEnrollmentResponse;
-import org.junit.jupiter.api.AfterEach;
+import io.hhplus.architecture.support.IntegrationTestSupport;
+import io.hhplus.architecture.support.exception.CustomException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
-public class LectureServiceIntegrationTest {
+public class LectureServiceIntegrationTest extends IntegrationTestSupport {
 
     @Autowired
     private LectureService lectureService;
 
     @Autowired
     private LectureRepository lectureRepository;
-
-    @Autowired
-    private LectureEnrollmentRepository lectureEnrollmentRepository;
-
-    @AfterEach
-    void tearDown() {
-        lectureEnrollmentRepository.deleteAllInBatch();
-        lectureRepository.deleteAllInBatch();
-    }
 
     @Test
     void 신청_기능한_잔여_좌석수가_1_이상이면_신청_성공한다() {
@@ -51,7 +36,7 @@ public class LectureServiceIntegrationTest {
                 .build();
 
         // when
-        LectureEnrollmentResponse response = lectureService.saveLectureEnrollment(request);
+        LectureEnrollment response = lectureService.enrollLecture(request.getUserId(), request.getLectureId());
 
         // then
         assertThat(response).isNotNull()
@@ -73,8 +58,8 @@ public class LectureServiceIntegrationTest {
                 .build();
 
         // when // then
-        assertThatThrownBy(() -> lectureService.saveLectureEnrollment(request))
-                .isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> lectureService.enrollLecture(request.getUserId(), request.getLectureId()))
+                .isInstanceOf(CustomException.class)
                 .hasMessage("신청 가능한 최대 정원이 초과되었습니다.");
 
     }
@@ -86,18 +71,14 @@ public class LectureServiceIntegrationTest {
         Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 30, "강사"));
 
         // 성공 카운트를 세는 변수
-        AtomicInteger cnt = new AtomicInteger();
-        // 예외 발생 여부 체크하는 변수
-        AtomicBoolean execptionThrown = new AtomicBoolean(false);
+        AtomicInteger successCnt = new AtomicInteger();
+        // 실패 카운트를 세는 변수
+        AtomicInteger failCnt = new AtomicInteger();
 
         int threadCount = 40;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 1; i <= threadCount; i++) {
-            // 예외 발생하면 반복문 빠져나오기
-            if(execptionThrown.get()) {
-                break;
-            }
 
             Long userId = Long.valueOf(i);
             executorService.submit(() -> {
@@ -107,10 +88,10 @@ public class LectureServiceIntegrationTest {
                             .lectureId(lecture.getId())
                             .build();
 
-                    lectureService.saveLectureEnrollment(request);
-                    cnt.getAndIncrement();
+                    lectureService.enrollLecture(request.getUserId(), request.getLectureId());
+                    successCnt.getAndIncrement();
                 } catch(RuntimeException e) {
-                    execptionThrown.set(true);
+                    failCnt.getAndIncrement();
                 } finally {
                     countDownLatch.countDown();
                 }
@@ -122,7 +103,8 @@ public class LectureServiceIntegrationTest {
         executorService.shutdown();
 
         // when // then
-        assertThat(cnt.get()).isEqualTo(30);
+        assertThat(successCnt.get()).isEqualTo(30);
+        assertThat(failCnt.get()).isEqualTo(10);
     }
 
     @Test
@@ -130,7 +112,7 @@ public class LectureServiceIntegrationTest {
         Long userId = 1L;
         LocalDateTime startDateTime = LocalDateTime.of(2024, 12, 28, 10, 0, 0);
 
-        Lecture lecture = lectureRepository.saveAndFlush(createLecture("특강", startDateTime, "설명", 30, "강사"));
+        Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 30, "강사"));
 
         LectureEnrollmentRequest request = LectureEnrollmentRequest.builder()
                 .userId(userId)
@@ -138,12 +120,12 @@ public class LectureServiceIntegrationTest {
                 .build();
 
         // 최초 수강 신청
-        lectureService.saveLectureEnrollment(request);
+        lectureService.enrollLecture(request.getUserId(), request.getLectureId());
 
         // when // then
         // 중복 수강 신청
-        assertThatThrownBy(() -> lectureService.saveLectureEnrollment(request))
-                .isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> lectureService.enrollLecture(request.getUserId(), request.getLectureId()))
+                .isInstanceOf(CustomException.class)
                 .hasMessage("각 특강은 한 번만 신청할 수 있습니다.");
     }
 
@@ -155,30 +137,30 @@ public class LectureServiceIntegrationTest {
         Lecture lecture = lectureRepository.save(createLecture("특강", startDateTime, "설명", 5, "강사"));
 
         // 성공 카운트를 세는 변수
-        AtomicInteger cnt = new AtomicInteger();
-        // 예외 발생 여부 체크하는 변수
-        AtomicBoolean execptionThrown = new AtomicBoolean(false);
+        AtomicInteger successCnt = new AtomicInteger();
+        // 실패 카운트를 세는 변수
+        AtomicInteger failCnt = new AtomicInteger();
 
         int threadCount = 5;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        for (int i = 1; i <= threadCount; i++) {
-            // 예외 발생하면 반복문 빠져나오기
-            if(execptionThrown.get()) {
-                break;
-            }
 
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+        CountDownLatch startLatch  = new CountDownLatch(1);
+
+        for (int i = 1; i <= threadCount; i++) {
             executorService.submit(() -> {
                 try {
+                    startLatch.await(); // 시작 신호 대기
+
                     LectureEnrollmentRequest request = LectureEnrollmentRequest.builder()
                             .userId(userId)
                             .lectureId(lecture.getId())
                             .build();
 
-                    lectureService.saveLectureEnrollment(request);
-                    cnt.getAndIncrement();
-                } catch(RuntimeException e) {
-                    execptionThrown.set(true);
+                    lectureService.enrollLecture(request.getUserId(), request.getLectureId());
+                    successCnt.getAndIncrement();
+                } catch(RuntimeException | InterruptedException e) {
+                    failCnt.getAndIncrement();
                 } finally {
                     countDownLatch.countDown();
                 }
@@ -186,11 +168,15 @@ public class LectureServiceIntegrationTest {
             });
         }
 
+        // 스레드 시작
+        startLatch.countDown();
         countDownLatch.await();
+
         executorService.shutdown();
 
         // when // then
-        assertThat(cnt.get()).isEqualTo(1);
+        assertThat(successCnt.get()).isEqualTo(1);
+        assertThat(failCnt.get()).isEqualTo(4);
     }
 
     private static Lecture createLecture(String title, LocalDateTime startDateTime, String description, int remainingCapacity, String lecturerName) {

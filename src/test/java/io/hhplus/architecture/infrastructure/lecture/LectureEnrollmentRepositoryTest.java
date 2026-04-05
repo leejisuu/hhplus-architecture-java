@@ -2,11 +2,9 @@ package io.hhplus.architecture.infrastructure.lecture;
 
 import io.hhplus.architecture.domain.lecture.LectureEnrollment;
 import io.hhplus.architecture.domain.lecture.LectureEnrollmentRepository;
-import org.junit.jupiter.api.AfterEach;
+import io.hhplus.architecture.support.IntegrationTestSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,17 +12,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-@SpringBootTest
-@ActiveProfiles("test")
-public class LectureEnrollmentRepositoryTest {
+public class LectureEnrollmentRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private LectureEnrollmentRepository lectureEnrollmentRepository;
-
-    @AfterEach
-    void tearDown() {
-        lectureEnrollmentRepository.deleteAllInBatch();
-    }
 
     @Test
     void 유저가_특강을_신청한다() {
@@ -47,7 +38,7 @@ public class LectureEnrollmentRepositoryTest {
     @Test
     void 유저가_신청한_모든_특강_목록을_신청_일자_기준_내림차순으로_정렬하여_조회한다() {
         // given
-        Long userId = 1L;
+        Long userId = 2L;
 
         LocalDateTime startDateTime1 = LocalDateTime.of(2024, 10, 20, 11, 0, 0);
         LocalDateTime startDateTime2 = LocalDateTime.of(2024, 11, 25, 16, 0, 0);

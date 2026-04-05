@@ -51,11 +51,4 @@ public class LectureEnrollment extends BaseCreatedAtEntity {
                 .lecturerName(lecture.getLecturerName())
                 .build();
     }
-
-    public static LectureEnrollment from(LectureEnrollmentRequest request) {
-        return LectureEnrollment.builder()
-                .userId(request.getUserId())
-                .lectureId(request.getLectureId())
-                .build();
-    }
 }

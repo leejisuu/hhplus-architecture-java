@@ -25,22 +25,12 @@ public class LectureRepositoryImpl implements LectureRepository {
     }
 
     @Override
-    public void deleteAllInBatch() {
-        lectureJpaRepository.deleteAllInBatch();
-    }
-
-    @Override
     public List<Lecture> saveAll(List<Lecture> lectures) {
         return lectureJpaRepository.saveAll(lectures);
     }
 
     @Override
-    public Lecture findByIdWithPessimisticLock(Long lectureId) {
+    public Lecture findByIdWithLock(Long lectureId) {
         return lectureJpaRepository.findByIdWithPessimisticLock(lectureId);
-    }
-
-    @Override
-    public Lecture saveAndFlush(Lecture lecture) {
-        return lectureJpaRepository.saveAndFlush(lecture);
     }
 }

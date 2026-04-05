@@ -31,11 +31,6 @@ public class LectureEnrollmentRepositoryImpl implements LectureEnrollmentReposit
     }
 
     @Override
-    public void deleteAllInBatch() {
-        lectureEnrollmentJpaRepository.deleteAllInBatch();
-    }
-
-    @Override
     public List<LectureEnrollment> saveAll(List<LectureEnrollment> lectureEnrollments) {
         return lectureEnrollmentJpaRepository.saveAll(lectureEnrollments);
     }
